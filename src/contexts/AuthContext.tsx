@@ -40,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     uid: firebaseUser.uid,
     email: firebaseUser.email || null,
     displayName: firebaseUser.displayName || null,
-    photoURL: firebaseUser.photoURL || null,
+    photoURL: firebaseUser.photoURL || null
   });
 
   const clearError = useCallback(() => setError(null), []);

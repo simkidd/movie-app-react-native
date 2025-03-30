@@ -1,7 +1,9 @@
 import CastCard from "@/components/CastCard";
 import { Loading } from "@/components/Loading";
+import { MovieCard } from "@/components/MovieCard";
 import { Rating } from "@/components/Rating";
 import { Colors } from "@/constants/colors";
+import { useSimilar } from "@/hooks/useSimilar";
 import { useTvShows } from "@/hooks/useTvShows";
 import { useVideos } from "@/hooks/useVideos";
 import { IGenre, IVideo } from "@/interfaces/movie.interface";
@@ -10,22 +12,20 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Animated,
   FlatList,
   Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Animated,
-  StyleSheet,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from "react-native";
 import { WebView } from "react-native-webview";
 import { useMovies } from "../../hooks/useMovies";
 import { imageUri } from "../../services/api";
-import { useSimilar } from "@/hooks/useSimilar";
-import { MovieCard } from "@/components/MovieCard";
 
 export default function MediaDetails() {
   const router = useRouter();

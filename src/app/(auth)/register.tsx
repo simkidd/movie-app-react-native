@@ -158,16 +158,16 @@ export default function RegisterScreen() {
           </Text>
         </Pressable>
 
-        <View className="flex-row items-center justify-center mb-6">
+        {/* <View className="flex-row items-center justify-center mb-6">
           <View className="flex-1 h-px bg-gray-600" />
           <Text className="mx-4 text-text-secondary">OR</Text>
           <View className="flex-1 h-px bg-gray-600" />
-        </View>
+        </View> */}
 
-        <Pressable className="flex-row items-center justify-center border border-gray-600 p-4 rounded-full mb-8">
+        {/* <Pressable className="flex-row items-center justify-center border border-gray-600 p-4 rounded-full mb-8">
           <FontAwesome name="google" size={20} color="white" className="mr-3" />
           <Text className="text-white font-bold">Continue with Google</Text>
-        </Pressable>
+        </Pressable> */}
 
         <View className="flex-row justify-center">
           <Text className="text-text-secondary">Already have an account? </Text>

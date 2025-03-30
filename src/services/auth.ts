@@ -1,19 +1,21 @@
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-  updateProfile,
-  updateEmail,
-  updatePassword,
-  User,
-  UserCredential,
-  GoogleAuthProvider,
-  signInWithCredential,
   AuthError,
   AuthErrorCodes,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signOut,
+  updateEmail,
+  updatePassword,
+  updateProfile,
+  User,
+  UserCredential,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { IUser } from "@/interfaces/user.interface";
 
 // Helper function to handle auth errors
 const handleAuthError = (error: AuthError) => {
@@ -45,6 +47,27 @@ const handleAuthError = (error: AuthError) => {
   }
 };
 
+// User management in Firestore
+const manageUserDocument = async (user: User, displayName?: string) => {
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    const userData: IUser = {
+      uid: user.uid,
+      email: user.email,
+      displayName: displayName || user.displayName,
+      photoURL: user.photoURL,
+    };
+    await setDoc(userRef, userData);
+  } else {
+    await updateDoc(userRef, {
+      lastLogin: new Date().toISOString(),
+      ...(displayName && { displayName }),
+    });
+  }
+};
+
 export const register = async (
   email: string,
   password: string,
@@ -56,12 +79,11 @@ export const register = async (
       email,
       password
     );
+
     await updateProfile(userCredential.user, { displayName });
-    // Update profile and send verification email
-    // await Promise.all([
-    //   updateProfile(userCredential.user, { displayName }),
-    //   sendEmailVerification(userCredential.user)
-    // ]);
+
+    await updateProfile(userCredential.user, { displayName });
+    await manageUserDocument(userCredential.user, displayName);
 
     return userCredential;
   } catch (error) {
@@ -81,11 +103,7 @@ export const login = async (
       password
     );
 
-    // Check if email is verified
-    // if (!userCredential.user.emailVerified) {
-    //   await sendEmailVerification(userCredential.user);
-    //   throw new Error('Please verify your email address. A new verification email has been sent.');
-    // }
+    await manageUserDocument(userCredential.user);
 
     return userCredential;
   } catch (error) {
@@ -172,9 +190,19 @@ export const googleSignIn = async (
 ): Promise<UserCredential> => {
   try {
     const credential = GoogleAuthProvider.credential(idToken);
-    return await signInWithCredential(auth, credential);
+
+    const userCredential = await signInWithCredential(auth, credential);
+    await manageUserDocument(userCredential.user);
+
+    return userCredential;
   } catch (error) {
     handleAuthError(error as AuthError);
     throw error;
   }
+};
+
+export const getUserData = async (uid: string): Promise<IUser | null> => {
+  const docRef = doc(db, "users", uid);
+  const docSnap = await getDoc(docRef);
+  return docSnap.exists() ? (docSnap.data() as IUser) : null;
 };

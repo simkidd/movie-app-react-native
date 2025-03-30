@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/logo-icon-removebg-preview.png",
         "backgroundColor": "#0f0f0f"
-      }
+      },
+      "package": "com.netreelz"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/Screenshot_2023-06-05_013736-removebg-preview.png",
+          "image": "./src/assets/images/highlight.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0f0f0f"

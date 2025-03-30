@@ -32,13 +32,19 @@ const WelcomeScreen = () => {
           }}
         >
           <View className="flex flex-row gap-[10px]">
-            {imageList.map((image, i) => (
+            {[Array(9)].map((_, i) => (
+              <View
+                key={i}
+                className="w-[160px] h-[160px] bg-accent rounded-3xl"
+              ></View>
+            ))}
+            {/* {imageList.map((image, i) => (
               <Image
                 key={i}
                 source={image}
                 className="w-[160px] h-[160px] rounded-3xl"
               />
-            ))}
+            ))} */}
           </View>
         </Marquee>
         <Marquee
@@ -50,12 +56,18 @@ const WelcomeScreen = () => {
           }}
         >
           <View className="flex flex-row gap-[10px]">
-            {imageList.map((image, i) => (
+            {/* {imageList.map((image, i) => (
               <Image
                 key={i}
                 source={image}
                 className="w-[160px] h-[160px] rounded-3xl"
               />
+            ))} */}
+            {[Array(9)].map((_, i) => (
+              <View
+                key={i}
+                className="w-[160px] h-[160px] bg-accent rounded-3xl"
+              ></View>
             ))}
           </View>
         </Marquee>
@@ -68,12 +80,18 @@ const WelcomeScreen = () => {
           }}
         >
           <View className="flex flex-row gap-[10px]">
-            {imageList.map((image, i) => (
+            {/* {imageList.map((image, i) => (
               <Image
                 key={i}
                 source={image}
                 className="w-[160px] h-[160px] rounded-3xl"
               />
+            ))} */}
+            {[Array(9)].map((_, i) => (
+              <View
+                key={i}
+                className="w-[160px] h-[160px] bg-accent rounded-3xl"
+              ></View>
             ))}
           </View>
         </Marquee>
@@ -81,8 +99,10 @@ const WelcomeScreen = () => {
           <Text className="text-5xl text-white font-bold text-center">
             Unlimited Movies, TV shows, and more.
           </Text>
-          <Text className="text-center text-text-secondary text-xl mt-2">Watch anywhere. Watch anytime.</Text>
-          
+          <Text className="text-center text-text-secondary text-xl mt-2">
+            Watch anywhere. Watch anytime.
+          </Text>
+
           <TouchableOpacity
             onPress={() => router.push("/register")}
             className="p-4 bg-accent rounded-full mb-4 mt-4"

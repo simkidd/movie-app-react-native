@@ -16,7 +16,8 @@ export default function InitialLayout() {
 
     if (!user && !inAuthGroup) {
       // User not authenticated and not on auth screen - redirect to login
-      router.replace("/(auth)/login");
+      // router.replace("/(auth)/login");
+      router.replace("/welcome");
     } else if (user && inAuthGroup) {
       // User authenticated but on auth screen - redirect to tabs
       router.replace("/(tabs)");

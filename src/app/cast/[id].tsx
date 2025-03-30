@@ -1,20 +1,20 @@
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { imageUri } from "@/services/api";
 import { Loading } from "@/components/Loading";
 import { useCastDetails } from "@/hooks/useCast";
-import { useRef, useState } from "react";
-import { Animated } from "react-native";
+import { imageUri } from "@/services/api";
 import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRef, useState } from "react";
+import {
+  Animated,
+  Image,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function CastDetailsScreen() {
   const { id } = useLocalSearchParams();
