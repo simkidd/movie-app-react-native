@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -19,20 +20,16 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const { user, loading: authLoading  } = useAuth();
+  const [showPassword, setShowPassword] = useState(true);
+  const { loading: authLoading } = useAuth();
 
-  // useEffect(() => {
-  //   if (!authLoading  && user) {
-  //     router.replace("/(tabs)");
-  //   }
-  // }, [user, authLoading ]);
-
-  if (authLoading ) {
+  if (authLoading) {
     return <Loading size="small" />;
   }
 
   const handleLogin = async () => {
+    Keyboard.dismiss();
+
     if (!email.trim() || !password.trim()) {
       Alert.alert("Validation Error", "Please fill in all fields");
       return;
@@ -52,7 +49,6 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-primary"
-      
     >
       <View className="items-center mt-10">
         <Image
@@ -62,7 +58,7 @@ export default function LoginScreen() {
           accessibilityLabel="App logo"
         />
       </View>
-      <View className="flex-1 p-6 justify-center">
+      <View className="flex-1 px-6 justify-center">
         <Text className="text-3xl font-bold text-white mb-8 text-center">
           Welcome Back
         </Text>
@@ -94,11 +90,11 @@ export default function LoginScreen() {
               placeholderTextColor="#9CA3AF"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={showPassword}
             />
-            <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)}>
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
               <Feather
-                name={secureTextEntry ? "eye-off" : "eye"}
+                name={showPassword ? "eye-off" : "eye"}
                 size={20}
                 color="#9CA3AF"
               />
@@ -131,7 +127,9 @@ export default function LoginScreen() {
         </Pressable> */}
 
         <View className="flex-row justify-center">
-          <Text className="text-text-secondary text-lg">Don't have an account? </Text>
+          <Text className="text-text-secondary text-lg">
+            Don't have an account?{" "}
+          </Text>
           <Link href="/register" asChild>
             <Pressable>
               <Text className="text-accent font-bold text-lg">Sign up</Text>

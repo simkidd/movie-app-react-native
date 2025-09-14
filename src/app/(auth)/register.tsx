@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Keyboard,
 } from "react-native";
 import { Link, router } from "expo-router";
 import { login, register } from "@/services/auth";
@@ -20,10 +21,11 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [confirmSecureTextEntry, setConfirmSecureTextEntry] = useState(true);
+  const [showPassword, setShowPassword] = useState(true);
+  const [confirmShowPassword, setConfirmShowPassword] = useState(true);
 
   const handleRegister = async () => {
+    Keyboard.dismiss();
     if (
       !displayName.trim() ||
       !email.trim() ||
@@ -74,7 +76,7 @@ export default function RegisterScreen() {
           accessibilityLabel="App logo"
         />
       </View>
-      <View className="flex-1 p-6 justify-center">
+      <View className="flex-1 px-6 justify-center">
         <Text className="text-3xl font-bold text-white mb-8 text-center">
           Create Account
         </Text>
@@ -121,11 +123,11 @@ export default function RegisterScreen() {
               placeholderTextColor="#9CA3AF"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={showPassword}
             />
-            <Pressable onPress={() => setSecureTextEntry(!secureTextEntry)}>
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
               <Feather
-                name={secureTextEntry ? "eye-off" : "eye"}
+                name={showPassword ? "eye-off" : "eye"}
                 size={20}
                 color="#9CA3AF"
               />
@@ -146,13 +148,13 @@ export default function RegisterScreen() {
               placeholderTextColor="#9CA3AF"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              secureTextEntry={confirmSecureTextEntry}
+              secureTextEntry={confirmShowPassword}
             />
             <Pressable
-              onPress={() => setConfirmSecureTextEntry(!confirmSecureTextEntry)}
+              onPress={() => setConfirmShowPassword(!confirmShowPassword)}
             >
               <Feather
-                name={confirmSecureTextEntry ? "eye-off" : "eye"}
+                name={confirmShowPassword ? "eye-off" : "eye"}
                 size={20}
                 color="#9CA3AF"
               />
@@ -182,7 +184,9 @@ export default function RegisterScreen() {
         </Pressable> */}
 
         <View className="flex-row justify-center">
-          <Text className="text-text-secondary text-lg">Already have an account? </Text>
+          <Text className="text-text-secondary text-lg">
+            Already have an account?{" "}
+          </Text>
           <Link href="/login" asChild>
             <Pressable>
               <Text className="text-accent font-bold text-lg">Login</Text>
