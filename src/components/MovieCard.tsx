@@ -77,7 +77,7 @@ export function MovieCardHorizontal({ item, type }: MovieCardProps) {
     <Link href={`/${type}/${item.id}`} asChild>
       <Pressable className="mb-4">
         <View className="flex-row bg-white/5 rounded-lg overflow-hidden h-32">
-          <View className="w-24 h-full bg-gray-800 items-center justify-center">
+          <View className="w-24 h-full bg-neutral-900 items-center justify-center">
             {loading && (
               <ActivityIndicator size="small" color={Colors.accent} />
             )}

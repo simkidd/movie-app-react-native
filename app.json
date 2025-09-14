@@ -18,7 +18,8 @@
         "backgroundColor": "#0f0f0f"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.onidev.netreelz"
+      "package": "com.onidev.netreelz",
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "bundler": "metro",

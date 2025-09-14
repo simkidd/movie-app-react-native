@@ -65,6 +65,7 @@ export default function SearchScreen() {
               No {searchType} found for "{query}"
             </Text>
           )}
+          keyboardShouldPersistTaps="handled"
         />
       ) : (
         <View className="flex-1 items-center justify-center">
