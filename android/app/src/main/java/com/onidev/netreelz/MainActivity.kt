@@ -1,4 +1,4 @@
-package com.netreelz
+package com.onidev.netreelz
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

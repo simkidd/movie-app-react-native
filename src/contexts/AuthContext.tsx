@@ -17,6 +17,8 @@ interface AuthContextType {
   error: AuthError | null;
   clearError: () => void;
   logoutUser: () => Promise<void>;
+  showWelcome: boolean;
+  completeWelcome: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -25,9 +27,12 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   clearError: () => {},
   logoutUser: async () => {},
+  showWelcome: false,
+  completeWelcome: () => {},
 });
 
 const STORAGE_KEY = "@auth_user";
+const WELCOME_KEY = "@has_seen_welcome";
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -35,12 +40,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const serializeUser = (firebaseUser: User): IUser => ({
     uid: firebaseUser.uid,
     email: firebaseUser.email || null,
     displayName: firebaseUser.displayName || null,
-    photoURL: firebaseUser.photoURL || null
+    photoURL: firebaseUser.photoURL || null,
   });
 
   const clearError = useCallback(() => setError(null), []);
@@ -72,11 +78,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
+  // 👇 Welcome screen logic
+  const checkWelcome = useCallback(async () => {
+    const hasSeen = await AsyncStorage.getItem(WELCOME_KEY);
+    if (!hasSeen) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const completeWelcome = useCallback(async () => {
+    await AsyncStorage.setItem(WELCOME_KEY, "true");
+    setShowWelcome(false);
+  }, []);
+
   useEffect(() => {
     let unsubscribe: () => void;
 
     const initializeAuth = async () => {
       await restoreUser();
+      await checkWelcome();
 
       unsubscribe = onAuthStateChanged(
         auth,
@@ -129,7 +149,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, clearError, logoutUser }}
+      value={{
+        user,
+        loading,
+        error,
+        clearError,
+        logoutUser,
+        showWelcome,
+        completeWelcome,
+      }}
     >
       {children}
     </AuthContext.Provider>

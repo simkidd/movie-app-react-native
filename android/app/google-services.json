@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "311630166972",
+    "project_id": "movie-app-73411",
+    "storage_bucket": "movie-app-73411.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311630166972:android:3dbb88f046ce04214389b9",
+        "android_client_info": {
+          "package_name": "com.onidev.netreelz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "311630166972-dninkv57l3a4lafe0vavofqrm00tpftm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTnEvkwE7w2D4QFlU4rSsxHM0tk9ESR_Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "311630166972-dninkv57l3a4lafe0vavofqrm00tpftm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "311630166972-c59bh804gtqe3l2ksf3g38tc27bp3l9b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.onidev.netreelz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

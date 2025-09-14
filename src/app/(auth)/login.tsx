@@ -20,15 +20,15 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const { user, loading: loadinguser } = useAuth();
+  const { user, loading: authLoading  } = useAuth();
 
-  useEffect(() => {
-    if (!loadinguser && user) {
-      router.replace("/(tabs)");
-    }
-  }, [user, loading]);
+  // useEffect(() => {
+  //   if (!authLoading  && user) {
+  //     router.replace("/(tabs)");
+  //   }
+  // }, [user, authLoading ]);
 
-  if (loadinguser) {
+  if (authLoading ) {
     return <Loading size="small" />;
   }
 
@@ -41,7 +41,6 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       await login(email, password);
-      router.replace("/(tabs)");
     } catch (error: any) {
       Alert.alert("Login Error", error.message);
     } finally {
@@ -53,6 +52,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-primary"
+      
     >
       <View className="items-center mt-10">
         <Image
@@ -72,7 +72,7 @@ export default function LoginScreen() {
           <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="mail" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Enter your email"
               placeholderTextColor="#9CA3AF"
               value={email}
@@ -89,7 +89,7 @@ export default function LoginScreen() {
           <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="lock" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Enter your password"
               placeholderTextColor="#9CA3AF"
               value={password}
@@ -131,10 +131,10 @@ export default function LoginScreen() {
         </Pressable> */}
 
         <View className="flex-row justify-center">
-          <Text className="text-text-secondary">Don't have an account? </Text>
+          <Text className="text-text-secondary text-lg">Don't have an account? </Text>
           <Link href="/register" asChild>
             <Pressable>
-              <Text className="text-accent font-bold">Sign up</Text>
+              <Text className="text-accent font-bold text-lg">Sign up</Text>
             </Pressable>
           </Link>
         </View>

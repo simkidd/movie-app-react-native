@@ -9,7 +9,7 @@ import { useVideos } from "@/hooks/useVideos";
 import { IGenre, IVideo } from "@/interfaces/movie.interface";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -24,8 +24,8 @@ import {
   View,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import { useMovies } from "../../hooks/useMovies";
-import { imageUri } from "../../services/api";
+import { useMovies } from "../../../hooks/useMovies";
+import { imageUri } from "../../../services/api";
 
 export default function MediaDetails() {
   const router = useRouter();
@@ -70,13 +70,20 @@ export default function MediaDetails() {
     }
   );
 
+  console.log("media>>>", media);
+
   if (isLoading) return <Loading />;
   if (!media)
     return (
-      <View className="flex-1 bg-primary items-center justify-center">
+      <View className="flex-1 items-center justify-center">
         <Text className="text-text-primary">
           {isMovie ? "Movie" : "TV Show"} not found
         </Text>
+        <Link href="/home" asChild>
+          <TouchableOpacity>
+            <Text className="text-accent font-bold">Go Home</Text>
+          </TouchableOpacity>
+        </Link>
       </View>
     );
 
@@ -88,11 +95,11 @@ export default function MediaDetails() {
   const genres = media.genres?.map((g: IGenre) => g.name).join(", ");
 
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1">
       {/* Collapsible Header */}
       {showHeader && (
         <Animated.View
-          className="absolute top-0 left-0 right-0 z-20 bg-primary py-4 px-4"
+          className="absolute top-0 left-0 right-0 z-20 py-4 px-4"
           style={[
             styles.header,
             {

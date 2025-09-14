@@ -40,6 +40,8 @@ const handleAuthError = (error: AuthError) => {
       );
     case AuthErrorCodes.CREDENTIAL_TOO_OLD_LOGIN_AGAIN:
       throw new Error("Session expired. Please login again.");
+    case AuthErrorCodes.NETWORK_REQUEST_FAILED:
+      throw new Error("Check your internet connection and try again.");
     default:
       throw new Error(
         error.message || "An unexpected authentication error occurred."
@@ -206,3 +208,13 @@ export const getUserData = async (uid: string): Promise<IUser | null> => {
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? (docSnap.data() as IUser) : null;
 };
+
+const config = {
+  iosClientId:
+    "311630166972-q5iio2pv1bc7f1qrc7a59k4h2hm154q0.apps.googleusercontent.com",
+  androidClientId:
+    "311630166972-dninkv57l3a4lafe0vavofqrm00tpftm.apps.googleusercontent.com",
+  scopes: ["profile", "email"],
+  permissions: ["public_profile", "email", "gender", "location"],
+};
+

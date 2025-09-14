@@ -8,9 +8,10 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { Link, router } from "expo-router";
-import { register } from "@/services/auth";
+import { login, register } from "@/services/auth";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
@@ -48,8 +49,11 @@ export default function RegisterScreen() {
 
     try {
       setLoading(true);
-      await register(email, password, displayName);
-      router.replace("/(tabs)");
+      const res = await register(email, password, displayName);
+
+      if (res) {
+        await login(email, password);
+      }
     } catch (error: any) {
       Alert.alert("Registration Error", error.message);
     } finally {
@@ -62,6 +66,14 @@ export default function RegisterScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-primary"
     >
+      <View className="items-center mt-10">
+        <Image
+          source={require("../../assets/images/logo-icon-removebg-preview.png")}
+          className="h-12"
+          resizeMode="contain"
+          accessibilityLabel="App logo"
+        />
+      </View>
       <View className="flex-1 p-6 justify-center">
         <Text className="text-3xl font-bold text-white mb-8 text-center">
           Create Account
@@ -69,10 +81,10 @@ export default function RegisterScreen() {
 
         <View className="mb-4">
           <Text className="text-text-secondary mb-2">Full Name</Text>
-          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-3">
+          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="user" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Enter your full name"
               placeholderTextColor="#9CA3AF"
               value={displayName}
@@ -84,10 +96,10 @@ export default function RegisterScreen() {
 
         <View className="mb-4">
           <Text className="text-text-secondary mb-2">Email</Text>
-          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-3">
+          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="mail" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Enter your email"
               placeholderTextColor="#9CA3AF"
               value={email}
@@ -101,10 +113,10 @@ export default function RegisterScreen() {
 
         <View className="mb-4">
           <Text className="text-text-secondary mb-2">Password</Text>
-          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-3">
+          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="lock" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Enter your password"
               placeholderTextColor="#9CA3AF"
               value={password}
@@ -126,10 +138,10 @@ export default function RegisterScreen() {
 
         <View className="mb-6">
           <Text className="text-text-secondary mb-2">Confirm Password</Text>
-          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-3">
+          <View className="flex-row items-center bg-white/10 rounded-lg px-4 py-2">
             <Feather name="lock" size={20} color="#9CA3AF" className="mr-3" />
             <TextInput
-              className="flex-1 text-white"
+              className="flex-1 text-white text-lg"
               placeholder="Confirm your password"
               placeholderTextColor="#9CA3AF"
               value={confirmPassword}
@@ -170,10 +182,10 @@ export default function RegisterScreen() {
         </Pressable> */}
 
         <View className="flex-row justify-center">
-          <Text className="text-text-secondary">Already have an account? </Text>
+          <Text className="text-text-secondary text-lg">Already have an account? </Text>
           <Link href="/login" asChild>
             <Pressable>
-              <Text className="text-accent font-bold">Login</Text>
+              <Text className="text-accent font-bold text-lg">Login</Text>
             </Pressable>
           </Link>
         </View>
