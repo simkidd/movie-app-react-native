@@ -1,8 +1,10 @@
-import { View, Text, Image, Pressable } from "react-native";
+import { View, Text, Image, Pressable, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
 import { imageUri } from "../services/api";
 import { IMovie } from "@/interfaces/movie.interface";
 import { ITVShow } from "@/interfaces/tv.interface";
+import { useState } from "react";
+import { Colors } from "@/constants/colors";
 
 interface MovieCardProps {
   item: IMovie | ITVShow;
@@ -12,6 +14,8 @@ interface MovieCardProps {
 }
 
 export function MovieCard({ item, type }: MovieCardProps) {
+  const [loading, setLoading] = useState(true);
+
   const title =
     type === "movie" ? (item as IMovie).title : (item as ITVShow).name;
 
@@ -25,11 +29,18 @@ export function MovieCard({ item, type }: MovieCardProps) {
       <Pressable className="mx-2">
         <View className="w-full">
           <View className="rounded-lg overflow-hidden">
-            <Image
-              source={{ uri: imageUri(item.poster_path as string) }}
-              className="w-full h-48"
-              resizeMode="cover"
-            />
+            <View className="w-full h-48 bg-neutral-900 items-center justify-center">
+              {loading && (
+                <ActivityIndicator size="small" color={Colors.accent} />
+              )}
+              <Image
+                source={{ uri: imageUri(item.poster_path as string) }}
+                className="w-full h-48 absolute"
+                resizeMode="cover"
+                onLoadStart={() => setLoading(true)}
+                onLoadEnd={() => setLoading(false)}
+              />
+            </View>
           </View>
           <View className="py-3">
             <Text
@@ -52,6 +63,8 @@ export function MovieCard({ item, type }: MovieCardProps) {
 }
 
 export function MovieCardHorizontal({ item, type }: MovieCardProps) {
+  const [loading, setLoading] = useState(true);
+
   const title =
     type === "movie" ? (item as IMovie).title : (item as ITVShow).name;
 
@@ -64,11 +77,18 @@ export function MovieCardHorizontal({ item, type }: MovieCardProps) {
     <Link href={`/${type}/${item.id}`} asChild>
       <Pressable className="mb-4">
         <View className="flex-row bg-white/5 rounded-lg overflow-hidden h-32">
-          <Image
-            source={{ uri: imageUri(item?.poster_path as string, "w200") }}
-            className="w-24 h-full"
-            resizeMode="cover"
-          />
+          <View className="w-24 h-full bg-gray-800 items-center justify-center">
+            {loading && (
+              <ActivityIndicator size="small" color={Colors.accent} />
+            )}
+            <Image
+              source={{ uri: imageUri(item?.poster_path as string, "w200") }}
+              className="w-24 h-full absolute"
+              resizeMode="cover"
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
+            />
+          </View>
           <View className="flex-1 p-3">
             <Text
               className="text-text-primary font-bold text-base"
