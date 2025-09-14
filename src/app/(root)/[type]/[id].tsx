@@ -217,7 +217,7 @@ export default function MediaDetails() {
           )}
 
           {/* Trailer Section */}
-          {videoKey && (
+          {/* {videoKey && (
             <>
               <Text className="text-text-primary text-lg mt-6 mb-2">
                 Trailer
@@ -240,7 +240,7 @@ export default function MediaDetails() {
                 )}
               </View>
             </>
-          )}
+          )} */}
 
           {/* Similar Movies/TV Shows Section */}
           {similarData?.results?.length > 0 && (
