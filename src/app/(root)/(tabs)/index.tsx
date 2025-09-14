@@ -2,6 +2,7 @@ import MovieCarousel from "@/components/MovieCarousel";
 import { IMovieCategory } from "@/hooks/useMovies";
 import { ITVCategory } from "@/hooks/useTvShows";
 import { FlatList, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const categories = [
   { title: "Popular Movies", value: "popular", type: "movie" },
@@ -18,7 +19,7 @@ const categories = [
 
 export default function HomeScreen() {
   return (
-    <View className="flex-1 bg-primary pt-4">
+    <SafeAreaView className="flex-1 bg-primary">
       <FlatList
         data={categories}
         keyExtractor={(item) => `${item.type}-${item.value}`}
@@ -36,6 +37,6 @@ export default function HomeScreen() {
         // )}
         // contentContainerStyle={{ paddingBottom: 20 }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

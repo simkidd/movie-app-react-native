@@ -5,6 +5,7 @@ import { useTvShows } from "@/hooks/useTvShows";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
@@ -24,7 +25,7 @@ export default function SearchScreen() {
   };
 
   return (
-    <View className="flex-1 p-4 bg-primary">
+    <SafeAreaView className="flex-1 p-4 bg-primary">
       {/* Search Bar with Type Toggle */}
       <View className="flex-row items-center mb-4">
         <TextInput
@@ -74,6 +75,6 @@ export default function SearchScreen() {
           </Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

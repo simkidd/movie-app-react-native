@@ -24,6 +24,7 @@ import {
   View,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMovies } from "../../../hooks/useMovies";
 import { imageUri } from "../../../services/api";
 
@@ -33,6 +34,7 @@ export default function MediaDetails() {
     id: string;
     type: "movie" | "tv";
   }>();
+  const insets = useSafeAreaInsets();
   const isMovie = type === "movie";
 
   const [videoKey, setVideoKey] = useState<string | null>(null);
@@ -64,13 +66,11 @@ export default function MediaDetails() {
     {
       listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        setShowHeader(offsetY > 100); // Show header when scrolled past 100px
+        setShowHeader(offsetY > 100);
       },
       useNativeDriver: false,
     }
   );
-
-  console.log("media>>>", media);
 
   if (isLoading) return <Loading />;
   if (!media)
@@ -95,7 +95,7 @@ export default function MediaDetails() {
   const genres = media.genres?.map((g: IGenre) => g.name).join(", ");
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-primary">
       {/* Collapsible Header */}
       {showHeader && (
         <Animated.View
@@ -103,6 +103,7 @@ export default function MediaDetails() {
           style={[
             styles.header,
             {
+              paddingTop: insets.top, // keep header below status bar
               opacity: scrollY.interpolate({
                 inputRange: [100, 150],
                 outputRange: [0, 1],
@@ -114,10 +115,10 @@ export default function MediaDetails() {
           <View className="flex-row items-center">
             <TouchableOpacity
               onPress={() => router.back()}
-              className="mr-4 p-2"
+              className="mr-4 p-2 rounded-full bg-black/30"
               activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={24} color="white" />
+              <Ionicons name="arrow-back" size={22} color="white" />
             </TouchableOpacity>
             <Text
               className="text-text-primary text-lg font-bold flex-1"
@@ -132,7 +133,10 @@ export default function MediaDetails() {
       {/* Content Scroll */}
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingTop: 190 }}
+        contentContainerStyle={{
+          paddingTop: 190 + insets.top, // push content down
+          paddingBottom: insets.bottom + 24,
+        }}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
         onScroll={handleScroll}
@@ -156,13 +160,20 @@ export default function MediaDetails() {
           {!showHeader && (
             <TouchableOpacity
               onPress={() => router.back()}
-              className="absolute top-4 left-4 bg-primary/50 rounded-full p-2 z-10"
+              style={{
+                position: "absolute",
+                top: insets.top + 12,
+                left: 16,
+              }}
+              className="bg-black/40 rounded-full p-2"
               activeOpacity={0.7}
             >
               <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Main Content */}
         <View className="p-4">
           <Text className="text-text-primary text-2xl font-bold">{title}</Text>
 
@@ -201,13 +212,12 @@ export default function MediaDetails() {
                   />
                 )}
                 showsHorizontalScrollIndicator={false}
-                // contentContainerStyle={{ paddingRight: 16 }}
               />
             </View>
           )}
 
           {/* Trailer Section */}
-          {/* {videoKey && (
+          {videoKey && (
             <>
               <Text className="text-text-primary text-lg mt-6 mb-2">
                 Trailer
@@ -230,7 +240,7 @@ export default function MediaDetails() {
                 )}
               </View>
             </>
-          )} */}
+          )}
 
           {/* Similar Movies/TV Shows Section */}
           {similarData?.results?.length > 0 && (
@@ -248,7 +258,6 @@ export default function MediaDetails() {
                   </View>
                 )}
                 showsHorizontalScrollIndicator={false}
-                // contentContainerStyle={{ paddingHorizontal: 16 }}
               />
             </View>
           )}
@@ -260,6 +269,7 @@ export default function MediaDetails() {
 
 const styles = StyleSheet.create({
   header: {
+    backgroundColor: "rgb(0, 0, 0)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,

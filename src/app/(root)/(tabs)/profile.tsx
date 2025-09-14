@@ -1,14 +1,10 @@
+import { Loading } from "@/components/Loading";
 import { Colors } from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import {
-  Image,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Profile = () => {
   const { user, logoutUser } = useAuth();
@@ -24,12 +20,13 @@ const Profile = () => {
   };
 
   if (!user) {
-    return null;
+    return <Loading size="small" />;
   }
 
   return (
-    <View className="flex-1 bg-primary py-4">
-      <View className="items-center py-8">
+    <SafeAreaView className="flex-1 bg-primary px-4">
+      {/* Header */}
+      <View className="items-center mt-8">
         <View className="relative">
           <Image
             source={{
@@ -37,12 +34,11 @@ const Profile = () => {
                 user.photoURL ||
                 "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
             }}
-            className="w-32 h-32 rounded-full border-4 border-accent"
-            resizeMode="cover"
+            className="w-32 h-32 rounded-full border-4 border-accent shadow-lg"
           />
           <Pressable
-            className="absolute bottom-0 right-0 bg-accent p-2 rounded-full"
-            onPress={() => console.log("Edit profile")}
+            className="absolute bottom-2 right-2 bg-accent p-2 rounded-full shadow-md"
+            onPress={() => console.log("Edit profile picture")}
           >
             <Ionicons name="camera" size={20} color="white" />
           </Pressable>
@@ -54,75 +50,57 @@ const Profile = () => {
         <Text className="text-text-secondary mt-1">{user.email}</Text>
       </View>
 
-      <View className="px-4 mt-8">
-        <Text className="text-text-primary text-xl font-bold mb-4">
-          Account Settings
-        </Text>
-
-        <Pressable
-          className="flex-row items-center py-4 border-b border-gray-800"
-          // onPress={() => router.push("/profile/edit")}
-        >
-          <Ionicons
-            name="person"
-            size={24}
-            color={Colors.accent}
-            className="mr-2"
-          />
-          <Text className="text-text-primary flex-1">Edit Profile</Text>
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={Colors.textSecondary}
-          />
-        </Pressable>
-
-        <Pressable
-          className="flex-row items-center py-4 border-b border-gray-800"
-          // onPress={() => router.push("/settings")}
-        >
-          <Ionicons
-            name="settings"
-            size={24}
-            color={Colors.accent}
-            className="mr-2"
-          />
-          <Text className="text-text-primary flex-1">Settings</Text>
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={Colors.textSecondary}
-          />
-        </Pressable>
-
-        <Pressable
-          className="flex-row items-center py-4 border-b border-gray-800"
-          // onPress={() => router.push("/help")}
-        >
-          <Ionicons
-            name="help-circle"
-            size={24}
-            color={Colors.accent}
-            className="mr-2"
-          />
-          <Text className="text-text-primary flex-1">Help & Support</Text>
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={Colors.textSecondary}
-          />
-        </Pressable>
+      {/* Account Section */}
+      <View className="mt-10 bg-white/5 rounded-2xl overflow-hidden shadow-md">
+        {[
+          {
+            label: "Edit Profile",
+            icon: "person",
+            action: () => {},
+          },
+          {
+            label: "Settings",
+            icon: "settings",
+            action: () => {},
+          },
+          {
+            label: "Help & Support",
+            icon: "help-circle",
+            action: () => {},
+          },
+        ].map((item, index) => (
+          <Pressable
+            key={index}
+            className="flex-row items-center justify-between px-4 py-5 border-b border-white/10"
+            onPress={item.action}
+          >
+            <View className="flex-row items-center space-x-3">
+              <Ionicons
+                name={item.icon as any}
+                size={24}
+                color={Colors.accent}
+              />
+              <Text className="text-text-primary text-base">{item.label}</Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={Colors.textSecondary}
+            />
+          </Pressable>
+        ))}
       </View>
 
-      <View className="px-4 mt-8">
+      {/* Logout */}
+      <View className="mt-10">
         <TouchableOpacity
           onPress={handleLogout}
-          className="p-4 rounded-lg items-center"
+          className="bg-accent/10 py-4 rounded-xl items-center"
         >
-          <Text className="text-accent font-bold">Log Out</Text>
+          <Text className="text-accent font-bold text-base">Log Out</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

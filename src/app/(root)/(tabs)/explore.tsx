@@ -5,6 +5,7 @@ import { MovieCard } from "@/components/MovieCard";
 import { useMovies } from "@/hooks/useMovies";
 import { useState } from "react";
 import { useTvShows } from "@/hooks/useTvShows";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ExploreScreen() {
   const [activeTab, setActiveTab] = useState<"movie" | "tv">("movie");
@@ -59,9 +60,9 @@ export default function ExploreScreen() {
   }
 
   return (
-    <View className="flex-1 bg-primary">
+    <SafeAreaView className="flex-1 bg-primary">
       {/* Tabs */}
-      <View className="flex-row px-4 pt-4">
+      <View className="flex-row ">
         <Pressable
           className={`flex-1 py-3 border-b-2 ${
             activeTab === "movie" ? "border-accent" : "border-transparent"
@@ -123,6 +124,6 @@ export default function ExploreScreen() {
           paddingTop: 16,
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 }

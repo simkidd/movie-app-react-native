@@ -44,7 +44,7 @@ export default function AppLayout({ onLayout }: Props) {
       style={{
         flex: 1,
         backgroundColor: "#0f0f0f",
-        paddingTop: insets.top,
+        // paddingTop: insets.top,
         paddingBottom: insets.bottom,
         paddingLeft: insets.left,
         paddingRight: insets.right,
