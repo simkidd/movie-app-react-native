@@ -1,57 +1,75 @@
-import { AuthProvider } from "@/contexts/AuthContext";
-import AppLayout from "@/layouts/app-layout";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import QueryProvider from "@/providers/QueryProvider";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Font from "expo-font";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import "./global.css";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import "./global.css";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-const RootLayout = () => {
-  const [appIsReady, setAppIsReady] = useState(false);
+const App = ({ onLayout }: { onLayout: () => void }) => {
+  const insets = useSafeAreaInsets();
 
-  useEffect(() => {
-    async function prepare() {
-      try {
-        // Pre-load fonts, make any API calls you need to do here
-        await Font.loadAsync(Entypo.font);
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Remove this if you copy and paste the code!
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        // Tell the application to render
-        setAppIsReady(true);
-      }
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#0f0f0f",
+        // paddingTop: insets.top,
+        paddingBottom: insets.bottom,
+        paddingLeft: insets.left,
+        paddingRight: insets.right,
+      }}
+      onLayout={onLayout}
+    >
+      <StatusBar translucent backgroundColor="transparent" style="auto" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: "transparent",
+          },
+        }}
+      />
+    </View>
+  );
+};
+
+const AppLayout = () => {
+  const { loading } = useAuth();
+
+  // hide splash once auth loading is done
+  const onLayoutRootView = useCallback(async () => {
+    if (!loading) {
+      await SplashScreen.hideAsync();
     }
+  }, [loading]);
 
-    prepare();
-  }, []);
-
-  const onLayoutRootView = useCallback(() => {
-    if (appIsReady) {
-      SplashScreen.hideAsync();
-    }
-  }, [appIsReady]);
-
-  if (!appIsReady) {
+  if (loading) {
+    // while loading, keep splash visible (render nothing yet)
     return null;
   }
 
+  return <App onLayout={onLayoutRootView} />;
+};
+
+const RootLayout = () => {
   return (
     <AuthProvider>
       <QueryProvider>
         <SafeAreaProvider>
           <GestureHandlerRootView>
-            <AppLayout onLayout={onLayoutRootView} />
+            <AppLayout />
           </GestureHandlerRootView>
         </SafeAreaProvider>
       </QueryProvider>

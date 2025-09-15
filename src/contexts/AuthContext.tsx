@@ -1,5 +1,5 @@
 import { IUser } from "@/interfaces/user.interface";
-import { logout } from "@/services/auth";
+import { login, logout } from "@/services/auth";
 import { auth } from "@/services/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthError, onAuthStateChanged, User } from "firebase/auth";
@@ -12,20 +12,24 @@ import React, {
 } from "react";
 
 interface AuthContextType {
+  isAuthenticated: boolean;
   user: IUser | null;
   loading: boolean;
   error: AuthError | null;
   clearError: () => void;
+  loginUser: (email: string, password: string) => Promise<void>;
   logoutUser: () => Promise<void>;
   showWelcome: boolean;
   completeWelcome: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
   user: null,
   loading: true,
   error: null,
   clearError: () => {},
+  loginUser: async () => {},
   logoutUser: async () => {},
   showWelcome: false,
   completeWelcome: () => {},
@@ -135,6 +139,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [persistUser, restoreUser]);
 
+  const loginUser = async (email: string, password: string) => {
+    clearError();
+    try {
+      const userCredential = await login(email, password);
+      const cleanUser = serializeUser(userCredential.user);
+      setUser(cleanUser);
+      await persistUser(cleanUser);
+    } catch (e) {
+      const authError = e as AuthError;
+      setError(authError);
+      throw authError;
+    }
+  };
+
   const logoutUser = async () => {
     try {
       await logout();
@@ -150,10 +168,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   return (
     <AuthContext.Provider
       value={{
+        isAuthenticated: !!user,
         user,
         loading,
         error,
         clearError,
+        loginUser,
         logoutUser,
         showWelcome,
         completeWelcome,

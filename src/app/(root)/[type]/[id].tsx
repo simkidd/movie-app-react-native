@@ -79,7 +79,7 @@ export default function MediaDetails() {
         <Text className="text-text-primary">
           {isMovie ? "Movie" : "TV Show"} not found
         </Text>
-        <Link href="/home" asChild>
+        <Link href="/" asChild>
           <TouchableOpacity>
             <Text className="text-accent font-bold">Go Home</Text>
           </TouchableOpacity>

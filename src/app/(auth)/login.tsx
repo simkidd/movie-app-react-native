@@ -1,8 +1,7 @@
 import { Loading } from "@/components/Loading";
 import { useAuth } from "@/contexts/AuthContext";
-import { googleSignIn, login } from "@/services/auth";
 import { Feather, FontAwesome } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { Link, router, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Alert,
@@ -23,7 +22,8 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, loginUser } = useAuth();
+  const router = useRouter();
 
   if (authLoading) {
     return <Loading size="small" />;
@@ -39,9 +39,10 @@ export default function LoginScreen() {
 
     try {
       setLoading(true);
-      await login(email, password);
+      await loginUser(email, password);
+      router.replace("/");
     } catch (error: any) {
-      Alert.alert("Login Error", error.message);
+      Alert.alert("Login Error", error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
