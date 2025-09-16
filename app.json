@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "movie-app",
-    "slug": "movie-app",
+    "name": "Netreelz",
+    "slug": "netreelz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/logo-icon-removebg-preview.png",
+    "icon": "./src/assets/images/ic_launcher_round.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/logo-icon-removebg-preview.png",
+        "foregroundImage": "./src/assets/images/ic_launcher_foreground.png",
         "backgroundColor": "#0f0f0f"
       },
       "googleServicesFile": "./google-services.json",
@@ -24,17 +24,21 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./src/assets/images/logo-icon-removebg-preview.png"
+      "favicon": "./src/assets/images/ic_launcher_round.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/logo-icon-removebg-preview.png",
+          "backgroundColor": "#232323",
+          "image": "./src/assets/images/ic_launcher_foreground.png",
+          "dark": {
+            "image": "./src/assets/images/ic_launcher_foreground.png",
+            "backgroundColor": "#0f0f0f"
+          },
           "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#0f0f0f"
+          "resizeMode": "contain"
         }
       ],
       "@react-native-google-signin/google-signin",

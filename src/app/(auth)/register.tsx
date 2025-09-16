@@ -1,23 +1,25 @@
-// app/(auth)/register.tsx
+import { useAuth } from "@/contexts/AuthContext";
+import { register } from "@/services/auth";
+import { Feather } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import { useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
   ScrollView,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { Link, router } from "expo-router";
-import { login, register } from "@/services/auth";
-import { Feather, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { toast } from "sonner-native";
 
 export default function RegisterScreen() {
+  const { loginUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,20 +36,17 @@ export default function RegisterScreen() {
       !password.trim() ||
       !confirmPassword.trim()
     ) {
-      Alert.alert("Validation Error", "Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert("Validation Error", "Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert(
-        "Validation Error",
-        "Password should be at least 6 characters"
-      );
+      toast.error("Password should be at least 6 characters");
       return;
     }
 
@@ -56,10 +55,10 @@ export default function RegisterScreen() {
       const res = await register(email, password, displayName);
 
       if (res) {
-        await login(email, password);
+        await loginUser(email, password);
       }
     } catch (error: any) {
-      Alert.alert("Registration Error", error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

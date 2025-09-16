@@ -10,6 +10,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { toast } from "sonner-native";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -143,12 +144,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     clearError();
     try {
       const userCredential = await login(email, password);
+      toast.success("Logged in successfully!");
       const cleanUser = serializeUser(userCredential.user);
       setUser(cleanUser);
       await persistUser(cleanUser);
     } catch (e) {
       const authError = e as AuthError;
       setError(authError);
+      toast.error(authError.message)
       throw authError;
     }
   };
@@ -158,9 +161,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       await logout();
       await persistUser(null);
       setUser(null);
+      toast.success("Logged out successfully!");
     } catch (e) {
       const authError = e as AuthError;
       setError(authError);
+      toast.error(authError.message)
       throw new Error("Failed to log out");
     }
   };

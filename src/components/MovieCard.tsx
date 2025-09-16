@@ -96,6 +96,7 @@ export function MovieCardHorizontal({ item, type }: MovieCardProps) {
             >
               {title}
             </Text>
+            <Text className="text-text-secondary mt-1" numberOfLines={2}>{item?.overview}</Text>
             <Text className="text-text-secondary text-sm mt-1">
               {new Date(releaseDate).getFullYear()}
             </Text>

@@ -12,7 +12,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Animated,
   FlatList,
   Image,
   NativeScrollEvent,
@@ -23,10 +22,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { WebView } from "react-native-webview";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useMovies } from "../../../hooks/useMovies";
 import { imageUri } from "../../../services/api";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  useAnimatedScrollHandler,
+} from "react-native-reanimated";
 
 export default function MediaDetails() {
   const router = useRouter();
@@ -39,8 +46,11 @@ export default function MediaDetails() {
 
   const [videoKey, setVideoKey] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showHeader, setShowHeader] = useState(false);
-  const scrollY = useRef(new Animated.Value(0)).current;
+
+  // Create shared values for animation
+  const headerOpacity = useSharedValue(0);
+  const headerTranslateY = useSharedValue(-100);
+  const scrollY = useSharedValue(0);
 
   const { data: movieData, isLoading: movieLoading } = useMovies.details(
     Number(id)
@@ -61,21 +71,31 @@ export default function MediaDetails() {
     }
   }, [videosData]);
 
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        setShowHeader(offsetY > 100);
-      },
-      useNativeDriver: false,
+  // Hook to track the scroll position
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+    // Set a threshold for when the header should appear
+    if (scrollY.value > 250) {
+      headerOpacity.value = withTiming(1, { duration: 300 });
+      headerTranslateY.value = withTiming(0, { duration: 500 });
+    } else {
+      headerOpacity.value = withTiming(0, { duration: 300 });
+      headerTranslateY.value = withTiming(-100, { duration: 500 });
     }
-  );
+  });
+
+  // Define animated styles
+  const animatedHeaderStyle = useAnimatedStyle(() => {
+    return {
+      opacity: headerOpacity.value,
+      transform: [{ translateY: headerTranslateY.value }],
+    };
+  });
 
   if (isLoading) return <Loading />;
   if (!media)
     return (
-      <View className="flex-1 items-center justify-center">
+      <SafeAreaView className="flex-1 items-center justify-center">
         <Text className="text-text-primary">
           {isMovie ? "Movie" : "TV Show"} not found
         </Text>
@@ -84,7 +104,7 @@ export default function MediaDetails() {
             <Text className="text-accent font-bold">Go Home</Text>
           </TouchableOpacity>
         </Link>
-      </View>
+      </SafeAreaView>
     );
 
   const title = isMovie ? media.title : media.name;
@@ -96,53 +116,33 @@ export default function MediaDetails() {
 
   return (
     <View className="flex-1 bg-primary">
-      {/* Collapsible Header */}
-      {showHeader && (
-        <Animated.View
-          className="absolute top-0 left-0 right-0 z-20 py-4 px-4"
-          style={[
-            styles.header,
-            {
-              paddingTop: insets.top, // keep header below status bar
-              opacity: scrollY.interpolate({
-                inputRange: [100, 150],
-                outputRange: [0, 1],
-                extrapolate: "clamp",
-              }),
-            },
-          ]}
-        >
-          <View className="flex-row items-center">
-            <TouchableOpacity
-              onPress={() => router.back()}
-              className="mr-4 p-2 rounded-full bg-black/30"
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={22} color="white" />
-            </TouchableOpacity>
-            <Text
-              className="text-text-primary text-lg font-bold flex-1"
-              numberOfLines={1}
-            >
-              {title}
-            </Text>
-          </View>
-        </Animated.View>
-      )}
+      {/* This is the new header that will appear on scroll */}
+      <Animated.View
+        style={[
+          animatedHeaderStyle,
+          {
+            paddingTop: insets.top,
+          },
+        ]}
+        className="absolute top-0 left-0 right-0 z-50 bg-primary flex-row items-center justify-between p-4 border-b"
+        pointerEvents={headerOpacity.value === 1 ? "auto" : "none"}
+      >
+        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} className="rounded-full p-2">
+          <Ionicons name="chevron-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text className="text-text-primary text-lg font-bold" numberOfLines={1}>
+          {title}
+        </Text>
+        <View style={{ width: 24 }} />
+      </Animated.View>
 
-      {/* Content Scroll */}
-      <ScrollView
+      <Animated.ScrollView
         className="flex-1"
-        contentContainerStyle={{
-          paddingTop: 190 + insets.top, // push content down
-          paddingBottom: insets.bottom + 24,
-        }}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={handleScroll}
+        onScroll={scrollHandler}
       >
         {/* Backdrop with Gradient Overlay */}
-        <View className="absolute w-full h-72">
+        <View className="w-full h-72">
           <Image
             source={{
               uri: imageUri(media.backdrop_path || media.poster_path, "w780"),
@@ -156,21 +156,18 @@ export default function MediaDetails() {
             style={StyleSheet.absoluteFill}
           />
 
-          {/* Initial Back Button */}
-          {!showHeader && (
+          <View
+            style={{ paddingTop: insets.top }}
+            className="absolute px-4 pt-4 z-10"
+          >
             <TouchableOpacity
               onPress={() => router.back()}
-              style={{
-                position: "absolute",
-                top: insets.top + 12,
-                left: 16,
-              }}
               className="bg-black/40 rounded-full p-2"
               activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={24} color="white" />
             </TouchableOpacity>
-          )}
+          </View>
         </View>
 
         {/* Main Content */}
@@ -262,18 +259,7 @@ export default function MediaDetails() {
             </View>
           )}
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: "rgb(0, 0, 0)",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});

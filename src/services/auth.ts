@@ -187,34 +187,8 @@ export const getIdToken = async (
   return auth.currentUser.getIdToken(forceRefresh);
 };
 
-export const googleSignIn = async (
-  idToken: string
-): Promise<UserCredential> => {
-  try {
-    const credential = GoogleAuthProvider.credential(idToken);
-
-    const userCredential = await signInWithCredential(auth, credential);
-    await manageUserDocument(userCredential.user);
-
-    return userCredential;
-  } catch (error) {
-    handleAuthError(error as AuthError);
-    throw error;
-  }
-};
-
 export const getUserData = async (uid: string): Promise<IUser | null> => {
   const docRef = doc(db, "users", uid);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? (docSnap.data() as IUser) : null;
 };
-
-const config = {
-  iosClientId:
-    "311630166972-q5iio2pv1bc7f1qrc7a59k4h2hm154q0.apps.googleusercontent.com",
-  androidClientId:
-    "311630166972-dninkv57l3a4lafe0vavofqrm00tpftm.apps.googleusercontent.com",
-  scopes: ["profile", "email"],
-  permissions: ["public_profile", "email", "gender", "location"],
-};
-

@@ -1,34 +1,23 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import QueryProvider from "@/providers/QueryProvider";
-import Entypo from "@expo/vector-icons/Entypo";
-import * as Font from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { Toaster } from "sonner-native";
 import "./global.css";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 const App = ({ onLayout }: { onLayout: () => void }) => {
-  const insets = useSafeAreaInsets();
-
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: "#0f0f0f",
-        // paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left,
-        paddingRight: insets.right,
       }}
       onLayout={onLayout}
     >
@@ -67,11 +56,10 @@ const RootLayout = () => {
   return (
     <AuthProvider>
       <QueryProvider>
-        <SafeAreaProvider>
-          <GestureHandlerRootView>
-            <AppLayout />
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
+        <GestureHandlerRootView>
+          <AppLayout />
+          <Toaster position="top-center" richColors />
+        </GestureHandlerRootView>
       </QueryProvider>
     </AuthProvider>
   );

@@ -1,10 +1,9 @@
 import { Loading } from "@/components/Loading";
-import { IMovie } from "@/interfaces/movie.interface";
-import { FlatList, Pressable, Text, View } from "react-native";
 import { MovieCard } from "@/components/MovieCard";
 import { useMovies } from "@/hooks/useMovies";
-import { useState } from "react";
 import { useTvShows } from "@/hooks/useTvShows";
+import { useState } from "react";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ExploreScreen() {
@@ -44,14 +43,14 @@ export default function ExploreScreen() {
 
   if (isError) {
     return (
-      <View className="flex-1 items-center justify-center bg-primary">
+      <SafeAreaView className="flex-1 items-center justify-center bg-primary">
         <Text className="text-white">
           Failed to load {activeTab === "movie" ? "movies" : "TV shows"}
         </Text>
         <Pressable onPress={() => refetch()} className="mt-4">
           <Text className="text-accent font-semibold">Retry</Text>
         </Pressable>
-      </View>
+      </SafeAreaView>
     );
   }
 
