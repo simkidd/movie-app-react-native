@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/ic_launcher_round.png",
-    "scheme": "myapp",
+    "scheme": "netreelz",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -41,7 +41,6 @@
           "resizeMode": "contain"
         }
       ],
-      "@react-native-google-signin/google-signin",
       "expo-font",
       "expo-web-browser"
     ],

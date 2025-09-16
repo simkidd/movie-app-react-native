@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { auth } from "@/services/firebase";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
 import { Link, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";

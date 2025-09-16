@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "311630166972-8ou7jiappeip6ep41ndhvpsomimpc5q6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.onidev.netreelz",
+            "certificate_hash": "5f69c1a31e514a3cca38db62260515ec190e3fb2"
+          }
+        },
+        {
           "client_id": "311630166972-dninkv57l3a4lafe0vavofqrm00tpftm.apps.googleusercontent.com",
           "client_type": 3
         }
