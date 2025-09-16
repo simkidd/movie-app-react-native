@@ -10,30 +10,29 @@ import { IGenre, IVideo } from "@/interfaces/movie.interface";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Image,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import YoutubePlayer, { PLAYER_STATES } from "react-native-youtube-iframe";
+import { toast } from "sonner-native";
 import { useMovies } from "../../../hooks/useMovies";
 import { imageUri } from "../../../services/api";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  useAnimatedScrollHandler,
-} from "react-native-reanimated";
 
 export default function MediaDetails() {
   const router = useRouter();
@@ -92,6 +91,18 @@ export default function MediaDetails() {
     };
   });
 
+  // playing trailer
+  const onStateChange = useCallback((state: PLAYER_STATES) => {
+    if (state === PLAYER_STATES.ENDED) {
+      setIsPlaying(false);
+      toast.info("Video has finished playing!");
+    }
+  }, []);
+
+  const togglePlaying = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
+
   if (isLoading) return <Loading />;
   if (!media)
     return (
@@ -127,7 +138,11 @@ export default function MediaDetails() {
         className="absolute top-0 left-0 right-0 z-50 bg-primary flex-row items-center justify-between p-4 border-b"
         pointerEvents={headerOpacity.value === 1 ? "auto" : "none"}
       >
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7} className="rounded-full p-2">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+          className="rounded-full p-2"
+        >
           <Ionicons name="chevron-back" size={24} color="white" />
         </TouchableOpacity>
         <Text className="text-text-primary text-lg font-bold" numberOfLines={1}>
@@ -214,30 +229,41 @@ export default function MediaDetails() {
           )}
 
           {/* Trailer Section */}
-          {/* {videoKey && (
-            <>
-              <Text className="text-text-primary text-lg mt-6 mb-2">
+          {videoKey && (
+            <View className="mt-6 px-4">
+              <Text className="text-text-primary text-lg font-bold mb-3">
                 Trailer
               </Text>
-              <View className="aspect-video w-full mb-6">
-                <WebView
-                  source={{ uri: `https://www.youtube.com/embed/${videoKey}` }}
-                  style={{ width: "100%", aspectRatio: 16 / 9 }}
-                  allowsFullscreenVideo
-                  javaScriptEnabled
-                  domStorageEnabled
+              <View className="aspect-video w-full mb-6 rounded-xl overflow-hidden shadow-xl">
+                <YoutubePlayer
+                  height={220}
+                  play={isPlaying}
+                  videoId={videoKey}
+                  onChangeState={onStateChange}
                 />
                 {!isPlaying && (
                   <TouchableOpacity
-                    onPress={() => setIsPlaying(true)}
+                    onPress={togglePlaying}
                     className="absolute inset-0 items-center justify-center"
                   >
-                    <Ionicons name="play-circle" size={48} color="white" />
+                    {/* This view acts as a semi-transparent overlay */}
+                    <View className="absolute inset-0 bg-black/40" />
+                    <Ionicons
+                      name="play-circle"
+                      size={56}
+                      color="white"
+                      style={{
+                        // Add a slight shadow to make the icon pop
+                        textShadowColor: "rgba(0,0,0,0.5)",
+                        textShadowOffset: { width: 1, height: 1 },
+                        textShadowRadius: 2,
+                      }}
+                    />
                   </TouchableOpacity>
                 )}
               </View>
-            </>
-          )} */}
+            </View>
+          )}
 
           {/* Similar Movies/TV Shows Section */}
           {similarData?.results?.length > 0 && (

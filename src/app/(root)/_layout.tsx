@@ -26,6 +26,7 @@ export default function ProtectedLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
+        animation: "ios_from_left",
       }}
     />
   );

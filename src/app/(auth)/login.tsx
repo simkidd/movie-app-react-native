@@ -16,7 +16,7 @@ import {
   ScrollView,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
@@ -29,7 +29,6 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
   const { loading: authLoading, loginUser } = useAuth();
-  const router = useRouter();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
